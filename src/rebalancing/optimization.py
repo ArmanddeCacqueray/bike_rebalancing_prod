@@ -38,8 +38,15 @@ def load_optimization_data(config, mini_sample=False):
         right_on="station_code",
         how="left"
     )
+        # 1. Calcul de la moyenne des coordonnées existantes
+    mean_lat = stations_all['latitude'].mean()
+    mean_lon = stations_all['longitude'].mean()
 
+    # 2. Remplissage des NaN avec ces valeurs
+    stations_all['latitude'] = stations_all['latitude'].fillna(mean_lat)
+    stations_all['longitude'] = stations_all['longitude'].fillna(mean_lon)
     coords_rad = np.radians(stations_all[["latitude", "longitude"]].values)
+
     distance_matrix = haversine_distances(coords_rad) * 6371 
 
     return frontiers, stations_all, distance_matrix
@@ -96,13 +103,13 @@ def run_optimization(config):
     dims, params = prepare_optimization_params(frontiers, stations_all, dist_matrix, config, mini_sample=mini_sample)
 
     try:
-        print("  Étape 1 : Calcul du plan stratégique (Weekplan)...")
-        wp = Weekplan(dims, params, verbose=False)
-        wp.solve()
+        #print("  Étape 1 : Calcul du plan stratégique (Weekplan)...")
+        #wp = Weekplan(dims, params, verbose=False)
+        #wp.solve()
 
         print("  Étape 2 : Résolution du routage opérationnel...")
-        n_models = config["params"].get("n_truck_models", 3)
-        routs = TruckRoutes(dims, params, verbose=True, nmodels=n_models, time_limit=config.get("solve_time_limit", "10min"))
+        n_models = 3 if config.get("solve", "best") == "best" else 2
+        routs = TruckRoutes(dims, params, verbose=True, nmodels=n_models, solve = config.get("solve", "best"))
         
         # On tente de résoudre le premier modèle
         routs.solve(0)

@@ -10,11 +10,13 @@
         "le jour TODAY: c'est le dernier jour ou on a des données jusqu'a environ 22h. Le but est de planifier les regulations de la nuit",
         "le file de REMPLISSAGE et de REGULATION, fichiers bruts qui seront traites en runant main.",
         "Les debordements de dates sont autorises, mais ils doivent au moins garantir:",
-        "1. si le mode est init, ils doivent couvrir un temps continu qui va du debut de la semaine derniere a today inclu",
-        "2. si le mode est rolling, il doivent couvrir la journee today (jusqu'a mettons 22h)"
+        "1. si le mode est INIT, ils doivent couvrir un temps continu qui va du debut de la semaine derniere a today inclu",
+        "2. si le mode est ROLLING, il doivent couvrir la journee today (jusqu'a mettons 22h)",
+        "Remarque: la semaine precedente peut etre traite une fois pour toutes",
+        "donc on peut mettre PROCESS_LAST_WEEK a false ssi on a deja fait le traitement de la semaine precedente"
     ],
     "mode": "init",
-    "process_last_week": false,
+    "process_last_week": true,
     "today": "2026-02-15",
     "paths": {
         "output_dir": "data/outputs",
@@ -49,6 +51,11 @@
         "critere_vide": 0.22,
         "critere_plein": 0.66
     },
-    "solve_time_limit": "10min",
+    "DOCUMENTATION_OPTIM": [
+        "Parametres d'optimisation",
+        "- solve: 'best' pour une solution plus optimale mais plus longue, 'fast' pour une solution plus rapide mais moins optimale",
+        "- visualize: si true, affiche les plans de rebalancing et les routes des camions"
+    ],
+    "solve": "fast",
     "visualize": true
 }

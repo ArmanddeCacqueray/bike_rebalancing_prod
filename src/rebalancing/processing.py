@@ -5,6 +5,9 @@ import pandas as pd
 from pathlib import Path
 from typing import Dict
 
+COLS_CLEAN = ["station", "time", "stock", "indispo", "diapasons", "not_regulated"]
+COLS_20MIN = ["station", "time", "stock", "indispo", "diapasons", "not_regulated", "capacity"]
+
 # ============================================================
 # ======================= STATION CONTROL ====================
 # ============================================================
@@ -204,8 +207,8 @@ def run_processing(config: dict):
             print("dimanche!")
             df_new.to_csv(file_last, index=False)
             df_new_20.to_csv(file_last_20, index=False)
-            pd.DataFrame().to_csv(file_new, index=False)
-            pd.DataFrame().to_csv(file_new_20, index=False)
+            pd.DataFrame(columns=COLS_CLEAN).to_csv(path_new, index=False)
+            pd.DataFrame(columns=COLS_20MIN).to_csv(path_new_20, index=False)
         else:
 
             df_last.to_csv(file_last, index=False)
@@ -236,8 +239,8 @@ def run_processing(config: dict):
             print("dimanche!")
             df_new.to_csv(path_last, index=False)
             df_new_20.to_csv(path_last_20, index=False)
-            pd.DataFrame().to_csv(path_new, index=False)
-            pd.DataFrame().to_csv(path_new_20, index=False)
+            pd.DataFrame(columns=COLS_CLEAN).to_csv(path_new, index=False)
+            pd.DataFrame(columns=COLS_20MIN).to_csv(path_new_20, index=False)
         else:
             df_new.to_csv(path_new, index=False)
             df_new_20.to_csv(path_new_20, index=False)

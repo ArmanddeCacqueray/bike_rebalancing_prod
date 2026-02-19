@@ -26,12 +26,8 @@ class TruckRoutes(Weekplan):
     # =====================================================
     # Init
     # =====================================================
-    def __init__(self, dims, params, verbose=False, nmodels=3, time_limit = "10min"):
-        #conversion time_limit en seconde robuste pandas
-        time_limit = pd.to_timedelta(time_limit).total_seconds()
-        time_limit = max(180, time_limit)  # minimum 1 minute
-
-        self.time_ratio = int(time_limit/600)
+    def __init__(self, dims, params, verbose=False, nmodels=3, solve = "best"):
+        self.solve_mode = solve
         super().__init__(dims, params, verbose=verbose, build_obj=False, nmodels=nmodels)
         self.modeldim = range(nmodels)
         self.N = self.dims["N"]          # jours
@@ -256,14 +252,14 @@ class TruckRoutes(Weekplan):
     # =====================================================
     def solve(self, m, time_limit=60):
         self.model[m].Params.Method = 3
-        if m==0: time_limit = 120*self.time_ratio
+        if m==0: time_limit = (120 if self.solve_mode == "best" else 60)
         if m>=1:
             for (i,j,n), var in self.x[m-1].items():
                 var2 = self.x[m].get((i,j,n))
                 if not isinstance(var2, gp.Var): continue
                 value = var.X if isinstance(var, gp.Var) else var
                 var2.setAttr('Start', round(value))
-        self.model[m].setParam('TimeLimit', time_limit*self.time_ratio)
+        self.model[m].setParam('TimeLimit', time_limit)
         self.model[m].optimize()
         print("============\nFINITION:")
         self.finition(m)
@@ -286,13 +282,14 @@ class TruckRoutes(Weekplan):
                         frozen_vars.append(var)
                     else:
                         var.LB, var.UB = 0, 1
-                self.model[m].setParam('TimeLimit', time_per_day*self.time_ratio)
+                self.model[m].setParam('TimeLimit', time_per_day)
                 self.model[m].optimize()
                 for var in frozen_vars: var.LB, var.UB = 0,1
         self.model[m].optimize()
 
     # LNS sur paires de jours
     def finition_paires(self, m, time_per_pair=15, n_pairs=5):
+        if self.solve_mode == "fast": n_pairs = 3
         for it in range(n_pairs):
             pair_days = random.sample(self.N, 2)
             frozen_vars = []
