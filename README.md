@@ -67,4 +67,41 @@ Une fois le script terminé, consultez le dossier `data/output` pour récupérer
 * ✅ **Le Plan de Régulation** : Instructions détaillées pour les équipes terrain.
 * 📈 **Fichiers de monitoring** : Diagnostics sur l'optimisation et indicateurs de performance.
 
+
+## 🔑 Help : Installer la licence Gurobi
+
+Si c'est votre première fois, voici comment éviter les galères courantes :
+
+### 1. Créer un compte
+
+Inscrivez-vous sur [Gurobi.com](https://www.gurobi.com/). Si vous êtes chercheur ou étudiant, utilisez votre adresse académique pour obtenir une **licence académique gratuite**.
+
+### 2. Récupérer votre clé
+
+Sur votre portail Gurobi, récupérez la commande de type :
+`grbgetkey xxxx-xxxx-xxxx-xxxx`
+
+### 3. Installer le logiciel (Indispensable)
+
+Le package `pip install gurobipy` ne suffit pas. Vous devez télécharger et installer le **Gurobi Optimizer** (le moteur de calcul) correspondant à votre système (Windows, Mac ou Linux).
+
+### 4. Activer la licence
+
+Ouvrez un terminal et collez votre commande `grbgetkey`.
+
+* **Important (Académique) :** Pour une licence académique, vous devez être connecté au réseau de votre université (ou via VPN) au moment de l'activation pour que Gurobi valide votre IP.
+* Le fichier `gurobi.lic` sera généré (généralement dans `/opt/gurobi/` ou votre dossier utilisateur).
+
+### 5. Vérification rapide
+
+Testez si Gurobi est bien détecté par Python :
+
+```bash
+python -c "import gurobipy; m=gurobipy.Model(); print('Connexion réussie !')"
+
+```
+
+*Si vous avez une erreur "License not found", vérifiez que la variable d'environnement `GRB_LICENSE_FILE` pointe bien vers votre fichier `.lic`.*
+
 ---
+

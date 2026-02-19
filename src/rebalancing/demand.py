@@ -37,10 +37,10 @@ def build_events(ts: pd.DataFrame) -> pd.DataFrame:
     ts.loc[ts["available"]   > 0, "bike_signal"] = 1
     ts.loc[ts["unavailable"] > 0, "bike_signal"] = -1
 
-    recent_dock = ts["dock_signal"].ffill().shift(1).fillna(0) > 0
+    recent_dock = ts["dock_signal"].ffill().shift(1).fillna(0).astype(float).infer_objects(copy=False) > 0
     ts["fresh_dock"] = recent_dock | (ts["arrivals"] > 0)
 
-    recent_bike = ts["bike_signal"].ffill().shift(1).fillna(0) > 0
+    recent_bike = ts["bike_signal"].ffill().shift(1).fillna(0).astype(float).infer_objects(copy=False) > 0 
     ts["fresh_bike"] = recent_bike | (ts["true_departures"] > 0)
     return ts
 

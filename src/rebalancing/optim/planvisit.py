@@ -1,6 +1,7 @@
 import numpy as np
 import gurobipy as gp
 from gurobipy import GRB
+import pandas as pd
 
 class Weekplan:
     def __init__(self, dims, params, verbose=False, build_obj=True, nmodels=1):

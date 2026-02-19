@@ -4,6 +4,7 @@ import random
 import gurobipy as gp
 from gurobipy import GRB
 from collections import defaultdict
+import pandas as pd
 
 DEPOT = 0
 VIDE  = 1

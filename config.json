@@ -35,5 +35,6 @@
     "thresholds": {
         "critere_vide": 0.22,
         "critere_plein": 0.66
-    }
+    },
+    "visualize": true
 }
