@@ -7,9 +7,9 @@ pip install pandas numpy scipy tensorly scikit-learn gurobipy matplotlib
 
 -des donnees de stocks et régulations, a placer dans data/inputs:
 
-*Stocks et regulations couvrant au moins la DERNIERE semaine complète 
+-Stocks et regulations couvrant au moins la DERNIERE semaine complète 
 -> servira pour le forecast de demande. On suppose que la demande est la meme d'une semaine a la suivante
-*Stocks et regulations couvrants tout le debut de la semaine EN COURS 
+-Stocks et regulations couvrants tout le debut de la semaine EN COURS 
 -> calcul un passif de score pour la semaine en cours (moyenne de stocks aux horaires stratégiques qui seront compté dans la metrique metropole)
 -> donne la derniere mise a jour des stocks pour initialiser le simulateur avec l'etat initial présent du parc velib
 ======================
