@@ -1,11 +1,25 @@
 {
+    "DOCUMENTATION": [
+        "Ce fichier configure les parametres a appliquer quand on lance main.py.",
+        "- parametres importants:",
+        "le MODE: si le mode est init, on construit les données from scratch.",
+        "Si le mode est rolling, on suppose qu'on a deja traité au moins toute la semaine derniere",
+        "= historique qui sert a predire la demande latente",
+        "- et tous les jours suivants jusqu'a todays-1. dans ce cas il y a juste a mettre a jour today",
+        "",
+        "le jour TODAY: c'est le dernier jour ou on a des données jusqu'a environ 22h. Le but est de planifier les regulations de la nuit",
+        "le file de REMPLISSAGE et de REGULATION, fichiers bruts qui seront traites en runant main.",
+        "Les debordements de dates sont autorises, mais ils doivent au moins garantir:",
+        "1. si le mode est init, ils doivent couvrir un temps continu qui va du debut de la semaine derniere a today inclu",
+        "2. si le mode est rolling, il doivent couvrir la journee today (jusqu'a mettons 22h)"
+    ],
     "mode": "init",
     "process_last_week": false,
     "today": "2026-02-15",
     "paths": {
-        "output_dir": "data/outputs",            
+        "output_dir": "data/outputs",
         "process_dir": "data/processed",
-        "raw_dir": "data/raw",        
+        "raw_dir": "data/raw",
         "remplissage_file": "data/raw/Remplissage_2026-02-09.csv",
         "regulation_file": "data/raw/Régulation_semaine_du_0209.csv"
     },
