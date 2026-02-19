@@ -1,123 +1,36 @@
 
-```markdown
-# 🚲 Bike Network Rebalancing & Logistics Optimizer
-/!\ Nécessite une licence GUROBI
-Ce projet est une solution industrielle complète pour optimiser le rééquilibrage des stations de vélos en libre-service. Il permet de passer de données brutes de remplissage à des feuilles de route précises pour les camions de régulation.
-
-
-
----
-
-## 📌 Architecture du Pipeline
-
-L'outil exécute 5 modules séquentiels orchestrés par `main.py` :
-
-1.  **Data Processing** : Nettoyage des CSV bruts, gestion des types et unification des fréquences temporelles.
-2.  **Demand Reconstruction** : Algorithme de décomposition tensorielle (Tucker) pour estimer la demande réelle, même quand une station est vide ou pleine (censure).
-3.  **Strategy Evaluation** : Simulation vectorisée de l'évolution des stocks pour chaque station selon différents scénarios de régulation.
-4.  **Pareto Frontiers** : Filtrage mathématique pour ne conserver que les stratégies offrant le meilleur compromis entre effort logistique et qualité de service.
-5.  **Global Optimization** : Modélisation Gurobi (MILP) pour résoudre simultanément le plan de visite hebdomadaire et les tournées de véhicules (VRP).
-
-
-
----
-
-## 📂 Structure du Projet
-
-```text
-.
-├── main.py                 # Point d'entrée unique (Orchestrateur)
-├── config.json             # Configuration centrale (Dates, Seuils, Chemins)
-├── data/
-│   ├── inputs/             # Fichiers sources (Remplissage_*.csv, attributs.csv)
-│   │   └── metadata/       # Blacklist.csv, etc.
-│   └── outputs/            # Résultats (Plannings, prédictions, graphiques)
-└── src/
-    └── rebalancing/        # Cœur algorithmie
-        ├── processing.py   # Module 1
-        ├── demand.py       # Module 2
-        ├── evaluation.py   # Module 3
-        ├── frontiers.py    # Module 4
-        ├── optimization.py # Module 5
-        └── utils.py        # Moteurs Gurobi (Weekplan, TruckRoutes)
-
-```
-
----
-
-## 🛠 Installation & Prérequis
-
-### 1. Prérequis Système
-
-* **Python 3.9** ou supérieur.
-* **Gurobi Optimizer** installé avec une licence valide (Académique ou Commerciale).
-
-### 2. Installation des dépendances
-
-```bash
+==========================================
+Le projet necessite:
+-une licence GUROBI (pour un solveur d'optimisation commercial puissant)
+-les packages suivants:
 pip install pandas numpy scipy tensorly scikit-learn gurobipy matplotlib
 
-```
+-des donnees de stocks et régulations, a placer dans data/inputs:
 
----
+*Stocks et regulations couvrant au moins la DERNIERE semaine complète 
+-> servira pour le forecast de demande. On suppose que la demande est la meme d'une semaine a la suivante
+*Stocks et regulations couvrants tout le debut de la semaine EN COURS 
+-> calcul un passif de score pour la semaine en cours (moyenne de stocks aux horaires stratégiques qui seront compté dans la metrique metropole)
+-> donne la derniere mise a jour des stocks pour initialiser le simulateur avec l'etat initial présent du parc velib
+======================
+ENSUITE:
+-on configure le CONFIG.JSON : noms de fichiers/colonnes a jours, mettre a jour current day: Mon, Tue, Wed
+-on lance MAIN.PY qui orchestre tout le pipeline
 
-## 🚀 Guide d'Utilisation
+Structure:
+processing.py
+-> on process les fichiers bruts (<2 minutes)
+demand.py
+-> on reconstitue une demande latente pour la semaine dernière (<2 minutes)
+evaluation.py
+-> on évalue toutes les strategies possibles pour toutes les stations (<2 minutes)
+frontieres.py
+-> on materialise un ensemble de strategie pertinentes par station par ses frontieres (qq secondes)
+optimization.py
+-> on fait tourner le solveur (~10 minutes)
 
-### 1. Configuration (`config.json`)
+===========================================
+OUTPUT:
+Un plan de régulation 
+D'autres fichiers utiles a chercher dans data/output
 
-Avant de lancer le script, mettez à jour les dates dans `config.json`.
-
-* `ancienne_semaine` : La semaine complète servant de base historique.
-* `nouvelle_semaine` : Les jours déjà écoulés de la semaine en cours.
-* `current_day` : Le jour actuel (ex: "Wed").
-
-### 2. Exécution
-
-Lancez simplement le chef d'orchestre :
-
-```bash
-python main.py
-
-```
-
-### 3. Analyse des résultats
-
-Les fichiers générés dans `data/outputs/` sont :
-
-* `planning_camions_final.csv` : **Le document opérationnel** (quelle heure, quelle station, quel camion).
-* `RECONSTRUCTION_FINAL.csv` : Les flux de demande reconstruits.
-* `evaluated_strategies.csv` : L'analyse d'impact théorique sur les stocks.
-
----
-
-## ⚙️ Paramètres de Contrôle
-
-Vous pouvez ajuster la stratégie dans le bloc `params` et `thresholds` du JSON :
-
-* **`critere_vide` (0.22)** : On s'assure que la station garde au moins 22% de vélos libres.
-* **`critere_plein` (0.66)** : On s'assure que la station garde au moins 34% (1 - 0.66) de bornes libres.
-* **`n_truck_models`** : Augmentez cette valeur pour une optimisation de trajet plus fine (plus lent).
-
----
-
-## ⚠️ Dépannage (FAQ)
-
-**Q : Gurobi affiche "No license found"**
-
-> Vérifiez que votre variable d'environnement `GRB_LICENSE_FILE` pointe vers votre fichier `gurobi.lic`.
-
-**Q : Une station critique n'apparaît pas dans le planning**
-
-> Vérifiez si elle n'est pas présente dans `data/inputs/metadata/blacklist.csv` ou si sa capacité est correctement renseignée dans `attributs.csv`.
-
-**Q : Le calcul est trop long (> 10 min)**
-
-> Réduisez le `n_truck_models` à 1 ou augmentez la valeur du `MIPGap` dans `utils.py`.
-
----
-
-*Développé pour l'optimisation des réseaux de mobilité urbaine.*
-
-```
-
-```
