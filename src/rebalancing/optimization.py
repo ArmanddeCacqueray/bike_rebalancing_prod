@@ -122,7 +122,7 @@ def run_optimization(config):
             wp.solve()
             
             n_models = 1 # En mode démo, on ne fait qu'un seul modèle pour aller vite
-            routs = TruckRoutes(dims, params, verbose=True, nmodels=n_models)
+            routs = TruckRoutes(dims, params, verbose=False, nmodels=n_models)
             routs.solve(0)
         else:
             raise e # Relancer si c'est une autre erreur Gurobi

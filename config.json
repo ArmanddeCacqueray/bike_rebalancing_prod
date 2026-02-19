@@ -1,21 +1,12 @@
 {
-    "dates": {
-        "ancienne_semaine": ["2026-02-09", "2026-02-15"],
-        "ref_ancienne": "0209",
-        "nouvelle_semaine": ["2026-02-16", "2026-02-17"],
-        "ref_nouvelle": ["0216", "0217"],
-        "current_day": "Wed"
-    },
-    "params": {
-        "sample_freq": "20min",
-        "gaussian_sigma": 30,
-        "tucker_ranks": [600, 7, 60, 5],
-        "max_lag": 5,
-        "gaussian_freq": "2min"
-    },
+    "mode": "rolling",
+    "process_last_week": false,
+    "today": "2026-02-17",
     "paths": {
-        "input_dir": "data/inputs",
-        "output_dir": "data/outputs"
+        "output_dir": "data/outputs",            
+        "process_dir": "data/processed",         
+        "remplissage_file": "data/raw/Remplissage_2026-02-17.csv",
+        "regulation_file": "data/raw/Régulation_semaine_du_0217.csv"
     },
     "cols_fill": {
         "station": "station_code",
@@ -30,6 +21,13 @@
         "station_drop": "Station dépose",
         "date_start": "Date début",
         "date_end": "Date fin"
+    },
+    "params": {
+        "sample_freq": "20min",
+        "gaussian_sigma": 30,
+        "tucker_ranks": [600, 7, 60, 5],
+        "max_lag": 5,
+        "gaussian_freq": "2min"
     },
     "hours": [5, 11, 16, 21],
     "thresholds": {

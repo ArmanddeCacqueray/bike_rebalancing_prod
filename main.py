@@ -34,7 +34,7 @@ def run_pipeline():
     
     print("="*60)
     print("🚀 DÉMARRAGE DU PIPELINE DE RÉÉQUILIBRAGE LOGISTIQUE")
-    print(f"   Jour courant : {config['dates']['current_day']}")
+    print(f"   Jour courant : {config['today']}")
     print("="*60)
 
     try:
@@ -45,8 +45,9 @@ def run_pipeline():
 
         # ÉTAPE 2 : Reconstruction de la demande (Tucker)
         # Calcule les flux de vélos réels cachés derrière les stocks
-        print("\n[ETAPE 2] Reconstruction de la demande latente (Algorithme Tucker)...")
-        run_reconstruction(config)
+        if config["process_last_week"]:
+            print("\n[ETAPE 2] Reconstruction de la demande latente (Algorithme Tucker)...")
+            run_reconstruction(config)
 
         # ÉTAPE 3 : Évaluation des stratégies
         # Simule des milliers de scénarios pour chaque station

@@ -3,105 +3,58 @@
 
 # 🚲 Vélib Optimization Pipeline
 
-Ce projet implémente un pipeline d'optimisation pour la régulation des stocks de vélos, basé sur des prévisions de demande latente et une résolution par solveur mathématique.
+Pipeline d’optimisation pour la régulation des stocks de vélos, basé sur des données de remplissage et régulation.
+
+---
 
 ## 📋 Prérequis
 
-### 1. Licence & Logiciels
-
-* **Gurobi Optimizer** : Une licence valide est nécessaire pour le fonctionnement du module `optimization.py`.
 * **Python 3.8+**
-
-### 2. Dépendances Python
+* **Gurobi Optimizer** (licence nécessaire pour `optimization.py`)
+* Dépendances Python :
 
 ```bash
-pip install pandas numpy scipy tensorly scikit-learn gurobipy matplotlib
-
+pip install pandas numpy scipy scikit-learn gurobipy matplotlib
 ```
 
 ---
 
-## 📂 Données d'entrée (`data/inputs`)
+## 📂 Données d'entrée
 
-Le modèle nécessite deux types de données temporelles pour fonctionner correctement :
-
-| Données | Période requise | Rôle dans le pipeline |
-| --- | --- | --- |
-| **Historique Complet** | Dernière semaine complète | Calcul du **forecast de demande** (hypothèse de saisonnalité hebdomadaire). |
-| **Données Temps Réel** | Début de semaine en cours | Calcul du **passif de score** et **initialisation** de l'état actuel du parc. |
+* Mode `init` : traitement complet depuis les fichiers bruts (`remplissage` et `regulation`) définis dans `config.json`.
+* Mode `rolling` : intégration uniquement de la journée `today`; les fichiers existants sont mis à jour et roulés le dimanche.
+* Les colonnes importantes (`time`, `station`) sont lues depuis `config.json` et vérifiées automatiquement.
 
 ---
 
-## ⚙️ Configuration et Lancement
+## ⚙️ Lancement
 
-1. **Configuration** : Modifiez le fichier `CONFIG.JSON`.
-* Vérifiez les noms des fichiers et des colonnes.
-* Mettez à jour le champ `current_day` (ex: `Mon`, `Tue`, `Wed`).
-
-
-2. **Exécution** : Lancez le script principal pour orchestrer le pipeline.
+1. Modifier `config.json` pour définir `mode`, fichiers et colonnes.
+2. Exécuter :
 
 ```bash
 python main.py
-
 ```
 
----
-
-## 🏗️ Structure du Pipeline
-
-Le processus est divisé en 5 étapes clés orchestrées par `main.py` :
-
-1. **`processing.py`** (~2 min) : Nettoyage et préparation des données brutes.
-2. **`demand.py`** (~2 min) : Reconstitution de la demande latente basée sur la semaine précédente.
-3. **`evaluation.py`** (~2 min) : Évaluation de toutes les stratégies possibles par station.
-4. **`frontieres.py`** (<1 min) : Calcul des frontières de Pareto pour isoler les stratégies pertinentes.
-5. **`optimization.py`** (~10 min) : Résolution du problème d'optimisation via **Gurobi**.
+> Le pipeline valide la présence des colonnes et renvoie une erreur claire si nécessaire.
 
 ---
 
-## 📊 Sorties (Output)
+## 🏗️ Étapes principales
 
-Une fois le script terminé, consultez le dossier `data/output` pour récupérer :
-
-* ✅ **Le Plan de Régulation** : Instructions détaillées pour les équipes terrain.
-* 📈 **Fichiers de monitoring** : Diagnostics sur l'optimisation et indicateurs de performance.
-
-
-## 🔑 Help : Installer la licence Gurobi
-
-Si c'est votre première fois, voici comment éviter les galères courantes :
-
-### 1. Créer un compte
-
-Inscrivez-vous sur [Gurobi.com](https://www.gurobi.com/). Si vous êtes chercheur ou étudiant, utilisez votre adresse académique pour obtenir une **licence académique gratuite**.
-
-### 2. Récupérer votre clé
-
-Sur votre portail Gurobi, récupérez la commande de type :
-`grbgetkey xxxx-xxxx-xxxx-xxxx`
-
-### 3. Installer le logiciel (Indispensable)
-
-Le package `pip install gurobipy` ne suffit pas. Vous devez télécharger et installer le **Gurobi Optimizer** (le moteur de calcul) correspondant à votre système (Windows, Mac ou Linux).
-
-### 4. Activer la licence
-
-Ouvrez un terminal et collez votre commande `grbgetkey`.
-
-* **Important (Académique) :** Pour une licence académique, vous devez être connecté au réseau de votre université (ou via VPN) au moment de l'activation pour que Gurobi valide votre IP.
-* Le fichier `gurobi.lic` sera généré (généralement dans `/opt/gurobi/` ou votre dossier utilisateur).
-
-### 5. Vérification rapide
-
-Testez si Gurobi est bien détecté par Python :
-
-```bash
-python -c "import gurobipy; m=gurobipy.Model(); print('Connexion réussie !')"
-
-```
-
-*Si vous avez une erreur "License not found", vérifiez que la variable d'environnement `GRB_LICENSE_FILE` pointe bien vers votre fichier `.lic`.*
+1. **Processing** : nettoyage et préparation des données.
+2. **Demand** : reconstitution de la demande latente.
+3. **Evaluation** : analyse des stratégies par station.
+4. **Frontières** : isolation des stratégies pertinentes.
+5. **Optimization** : résolution du problème avec Gurobi.
 
 ---
+
+## 📊 Sorties
+
+* `data/outputs` : fichiers de planification et monitoring.
+* Noms standardisés :
+
+  * `CLEAN_last_week.csv`, `CLEAN_new_week.csv`
+  * `CLEAN_last_week_20min.csv`, `CLEAN_new_week_20min.csv`
 

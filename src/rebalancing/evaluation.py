@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 from itertools import product
 from pathlib import Path
+import datetime
 
 # ======================
 # ===== CORE LOGIC =====
@@ -78,9 +79,9 @@ def int_to_binary_matrix(indices, n_bits):
 
 def load_data_clean(path, config_paths):
     """Charge les données en filtrant la blacklist."""
-    meta_dir = Path(config_paths["input_dir"]) / "metadata"
+    in_dir = Path(config_paths["processed_dir"])
     try:
-        blacklist = set(pd.read_csv(meta_dir / "blacklist.csv")["station"].unique())
+        blacklist = set(pd.read_csv(in_dir / "blacklist.csv")["station"].unique())
     except FileNotFoundError:
         blacklist = set()
 
@@ -93,10 +94,11 @@ def run_evaluation(config):
     """Pipeline principal d'évaluation."""
     print("--- Début Évaluation des Stratégies ---")
     
-    # Params
-    day_map = {"Mon":0, "Tue":1, "Wed":2, "Thu":3, "Fri":4, "Sat":5, "Sun":6}
-    cur_day_str = config["dates"]["current_day"]
-    n_past_day = day_map[cur_day_str]
+    # Convertir today en datetime
+    cur_day = datetime.strptime(config["today"], "%Y-%m-%d")
+    
+    # Obtenir l'indice du jour (0 = lundi, 6 = dimanche)
+    n_past_day = cur_day.weekday()  
     n_day_total = 7
     n_futur_day = n_day_total - n_past_day
     
@@ -106,13 +108,11 @@ def run_evaluation(config):
     apply_tol = config["params"].get("apply_tol", 4)
     reg_candidates = np.array([15, -15])
     
-    in_dir = Path(config["paths"]["input_dir"])
-    meta_dir = Path(config["paths"]["input_dir"]) / "metadata"
+    in_dir = Path(config["paths"]["processed_dir"]) 
     out_dir = Path(config["paths"]["output_dir"])
     
     # Chemins
-    jname = "".join(config["dates"]["ref_nouvelle"])
-    passif_file = meta_dir / f"CLEAN{jname}.csv"
+    passif_file = in_dir / "CLEAN_new_week_20min.csv"
     forecast_file = out_dir / "RECONSTRUCTION_FINAL.csv"
     output_csv = out_dir / "evaluated_strategies.csv"
 

@@ -104,11 +104,11 @@ def run_reconstruction(config):
     Prend en entrée le dictionnaire 'config' issu du JSON.
     """
     # 1. Chemins et Params depuis la config
+    in_dir = Path(config["paths"]["input_dir"])
     out_dir = Path(config["paths"]["output_dir"])
-    meta_dir = Path(config["paths"]["input_dir"]) / "metadata"
     
-    clean_csv = meta_dir / "CLEAN.csv"
-    clean_20_csv = meta_dir / "CLEAN_20MIN.csv"
+    clean_csv = in_dir / "CLEAN_last_week.csv"
+    clean_20_csv = in_dir / "CLEAN_last_week_20min.csv"
     output_csv = out_dir / "RECONSTRUCTION_FINAL.csv"
 
     g_freq = config["params"].get("gaussian_freq", "2min")
