@@ -12,6 +12,7 @@ pip install pandas numpy scipy tensorly scikit-learn gurobipy matplotlib
 -Stocks et regulations couvrants tout le debut de la semaine EN COURS 
 -> calcul un passif de score pour la semaine en cours (moyenne de stocks aux horaires stratégiques qui seront compté dans la metrique metropole)
 -> donne la derniere mise a jour des stocks pour initialiser le simulateur avec l'etat initial présent du parc velib
+
 ======================
 ENSUITE:
 -on configure le CONFIG.JSON : noms de fichiers/colonnes a jours, mettre a jour current day: Mon, Tue, Wed
