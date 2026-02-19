@@ -1,0 +1,39 @@
+{
+    "dates": {
+        "ancienne_semaine": ["2026-02-09", "2026-02-15"],
+        "ref_ancienne": "0209",
+        "nouvelle_semaine": ["2026-02-16", "2026-02-17"],
+        "ref_nouvelle": ["0216", "0217"],
+        "current_day": "Wed"
+    },
+    "params": {
+        "sample_freq": "20min",
+        "gaussian_sigma": 30,
+        "tucker_ranks": [600, 7, 60, 5],
+        "max_lag": 5,
+        "gaussian_freq": "2min"
+    },
+    "paths": {
+        "input_dir": "data/inputs",
+        "output_dir": "data/outputs"
+    },
+    "cols_fill": {
+        "station": "station_code",
+        "time": "last_update_date",
+        "available_pattern": "available",
+        "not_available_pattern": "not_available",
+        "docks_free": "nb_free_dock",
+        "cable_free": "nb_free_cable"
+    },
+    "cols_reg": {
+        "station_pick": "Station prise",
+        "station_drop": "Station dépose",
+        "date_start": "Date début",
+        "date_end": "Date fin"
+    },
+    "hours": [5, 11, 16, 21],
+    "thresholds": {
+        "critere_vide": 0.22,
+        "critere_plein": 0.66
+    }
+}
