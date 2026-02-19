@@ -19,11 +19,11 @@ def load_optimization_data(config, mini_sample=False):
     Charge les frontières et les coordonnées GPS.
     Si mini_sample=True, réduit à 5 stations vides et 5 stations pleines max.
     """
+    raw_dir = Path(config["paths"]["raw_dir"])
     out_dir = Path(config["paths"]["output_dir"])
-    in_dir = Path(config["paths"]["input_dir"])
     
     frontiers = pd.read_csv(out_dir / "frontiers_strategies.csv")
-    lat_lon = pd.read_csv(in_dir / "attributs.csv")
+    lat_lon = pd.read_csv(raw_dir / "attributs.csv")
 
     if mini_sample:
         print("💡 Mode Mini-Sample activé (Max 5 stations de chaque signe pour la version gratuite)")
@@ -102,7 +102,7 @@ def run_optimization(config):
 
         print("  Étape 2 : Résolution du routage opérationnel...")
         n_models = config["params"].get("n_truck_models", 3)
-        routs = TruckRoutes(dims, params, verbose=True, nmodels=n_models)
+        routs = TruckRoutes(dims, params, verbose=True, nmodels=n_models, time_limit=config.get("solve_time_limit", "10min"))
         
         # On tente de résoudre le premier modèle
         routs.solve(0)

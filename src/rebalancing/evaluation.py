@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from logging import config
 import pandas as pd
 import numpy as np
 from itertools import product
 from pathlib import Path
-import datetime
+from datetime import datetime
+
 
 # ======================
 # ===== CORE LOGIC =====
@@ -77,15 +79,17 @@ def int_to_binary_matrix(indices, n_bits):
 # ===== WRAPPERS =======
 # ======================
 
-def load_data_clean(path, config_paths):
+def load_data_clean(path, config):
     """Charge les données en filtrant la blacklist."""
-    in_dir = Path(config_paths["processed_dir"])
+    in_dir = Path(config["paths"]["process_dir"])
     try:
         blacklist = set(pd.read_csv(in_dir / "blacklist.csv")["station"].unique())
     except FileNotFoundError:
         blacklist = set()
 
     df = pd.read_csv(path)
+    df["time"] = pd.to_datetime(df["time"])  # conversion permanente
+    df = df[df["time"] < pd.to_datetime(config["today"]) + pd.Timedelta(days=1)]
     df = df[~df["station"].isin(blacklist)]
     stations = df["station"].unique()
     return df, stations, len(stations)
@@ -98,7 +102,7 @@ def run_evaluation(config):
     cur_day = datetime.strptime(config["today"], "%Y-%m-%d")
     
     # Obtenir l'indice du jour (0 = lundi, 6 = dimanche)
-    n_past_day = cur_day.weekday()  
+    n_past_day = (cur_day.weekday() + 1) %7  
     n_day_total = 7
     n_futur_day = n_day_total - n_past_day
     
@@ -108,7 +112,7 @@ def run_evaluation(config):
     apply_tol = config["params"].get("apply_tol", 4)
     reg_candidates = np.array([15, -15])
     
-    in_dir = Path(config["paths"]["processed_dir"]) 
+    in_dir = Path(config["paths"]["process_dir"]) 
     out_dir = Path(config["paths"]["output_dir"])
     
     # Chemins
@@ -119,14 +123,14 @@ def run_evaluation(config):
     # 1. Chargement Passif
     past_sum_hours = None
     if n_past_day > 0:
-        df_p, stations, n_s = load_data_clean(passif_file, config["paths"])
+        df_p, stations, n_s = load_data_clean(passif_file, config)
         stocks = df_p['stock'].values.reshape(n_s, -1, n_per_day)
         past_sum_hours = stocks[:, :n_past_day, metropole_h].sum(axis=1)
         start = stocks[:, -1, -2*n_per_h] # 2h avant la fin
         capacite = df_p.groupby("station")["capacity"].max().values
     
     # 2. Chargement Forecast
-    df_f, stations, n_s = load_data_clean(forecast_file, config["paths"])
+    df_f, stations, n_s = load_data_clean(forecast_file, config)
     if n_past_day == 0:
         stocks_f = df_f['stock'].values.reshape(n_s, n_day_total, n_per_day)
         start = stocks_f[:, 0, 0] # Début de semaine

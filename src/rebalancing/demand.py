@@ -37,10 +37,10 @@ def build_events(ts: pd.DataFrame) -> pd.DataFrame:
     ts.loc[ts["available"]   > 0, "bike_signal"] = 1
     ts.loc[ts["unavailable"] > 0, "bike_signal"] = -1
 
-    recent_dock = ts["dock_signal"].ffill().shift(1).fillna(0).astype(float).infer_objects(copy=False) > 0
+    recent_dock = ts["dock_signal"].ffill().infer_objects(copy=False).shift(1).fillna(0).astype(float) > 0
     ts["fresh_dock"] = recent_dock | (ts["arrivals"] > 0)
 
-    recent_bike = ts["bike_signal"].ffill().shift(1).fillna(0).astype(float).infer_objects(copy=False) > 0 
+    recent_bike = ts["bike_signal"].ffill().infer_objects(copy=False).shift(1).fillna(0).astype(float) > 0 
     ts["fresh_bike"] = recent_bike | (ts["true_departures"] > 0)
     return ts
 
@@ -104,7 +104,7 @@ def run_reconstruction(config):
     Prend en entrée le dictionnaire 'config' issu du JSON.
     """
     # 1. Chemins et Params depuis la config
-    in_dir = Path(config["paths"]["input_dir"])
+    in_dir = Path(config["paths"]["process_dir"])
     out_dir = Path(config["paths"]["output_dir"])
     
     clean_csv = in_dir / "CLEAN_last_week.csv"
@@ -113,6 +113,7 @@ def run_reconstruction(config):
 
     g_freq = config["params"].get("gaussian_freq", "2min")
     g_sigma = config["params"]["gaussian_sigma"]
+    g_sigma = pd.to_timedelta(g_sigma).total_seconds() / pd.to_timedelta(g_freq).total_seconds()
     t_freq = config["params"].get("sample_freq", "20min")
     t_ranks = tuple(config["params"]["tucker_ranks"])
     max_lag = config["params"].get("max_lag", 5)

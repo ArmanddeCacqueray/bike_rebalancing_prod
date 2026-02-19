@@ -1,12 +1,13 @@
 {
-    "mode": "rolling",
+    "mode": "init",
     "process_last_week": false,
-    "today": "2026-02-17",
+    "today": "2026-02-15",
     "paths": {
         "output_dir": "data/outputs",            
-        "process_dir": "data/processed",         
-        "remplissage_file": "data/raw/Remplissage_2026-02-17.csv",
-        "regulation_file": "data/raw/Régulation_semaine_du_0217.csv"
+        "process_dir": "data/processed",
+        "raw_dir": "data/raw",        
+        "remplissage_file": "data/raw/Remplissage_2026-02-09.csv",
+        "regulation_file": "data/raw/Régulation_semaine_du_0209.csv"
     },
     "cols_fill": {
         "station": "station_code",
@@ -24,7 +25,7 @@
     },
     "params": {
         "sample_freq": "20min",
-        "gaussian_sigma": 30,
+        "gaussian_sigma": "30min",
         "tucker_ranks": [600, 7, 60, 5],
         "max_lag": 5,
         "gaussian_freq": "2min"
@@ -34,5 +35,6 @@
         "critere_vide": 0.22,
         "critere_plein": 0.66
     },
+    "solve_time_limit": "10min",
     "visualize": true
 }

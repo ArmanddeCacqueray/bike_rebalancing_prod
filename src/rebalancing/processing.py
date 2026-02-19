@@ -196,11 +196,22 @@ def run_processing(config: dict):
         df_new = df_clean[df_clean["time"] >= current_week_start].copy()
         df_last_20 = df_clean_20[df_clean_20["time"] < current_week_start].copy()
         df_new_20 = df_clean_20[df_clean_20["time"] >= current_week_start].copy()
+        file_new, file_new_20, file_last, file_last_20 = [
+            process_dir / f"CLEAN_{label}.csv" for label in ["new_week", "new_week_20min", "last_week", "last_week_20min"]
+        ]
 
-        df_last.to_csv(process_dir / "CLEAN_last_week.csv", index=False)
-        df_last_20.to_csv(process_dir / "CLEAN_last_week_20min.csv", index=False)
-        df_new.to_csv(process_dir / "CLEAN_new_week.csv", index=False)
-        df_new_20.to_csv(process_dir / "CLEAN_new_week_20min.csv", index=False)
+        if today.weekday() == 6:
+            print("dimanche!")
+            df_new.to_csv(file_last, index=False)
+            df_new_20.to_csv(file_last_20, index=False)
+            pd.DataFrame().to_csv(file_new, index=False)
+            pd.DataFrame().to_csv(file_new_20, index=False)
+        else:
+
+            df_last.to_csv(file_last, index=False)
+            df_last_20.to_csv(file_last_20, index=False)
+            df_new.to_csv(file_new, index=False)
+            df_new_20.to_csv(file_new_20, index=False)
 
     elif mode == "rolling":
         df_day = read_and_filter(remplissage_path, cols_fill["station"], cols_fill["time"], today, today, process_dir)
@@ -222,6 +233,7 @@ def run_processing(config: dict):
 
         # rollover dimanche
         if today.weekday() == 6:
+            print("dimanche!")
             df_new.to_csv(path_last, index=False)
             df_new_20.to_csv(path_last_20, index=False)
             pd.DataFrame().to_csv(path_new, index=False)
