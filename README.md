@@ -1,12 +1,7 @@
-Bien sûr ! Voici le contenu complet de ton fichier `README.md` prêt à être copié-collé. J'y ai inclus une structure professionnelle avec des badges, des sections claires et même un guide de dépannage.
 
 ```markdown
 # 🚲 Bike Network Rebalancing & Logistics Optimizer
-
-[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
-[![Gurobi](https://img.shields.io/badge/Solver-Gurobi-green.svg)](https://www.gurobi.com/)
-[![License: Proprietary](https://img.shields.io/badge/License-Proprietary-red.svg)](https://choosealicense.com/)
-
+/!\ Nécessite une licence GUROBI
 Ce projet est une solution industrielle complète pour optimiser le rééquilibrage des stations de vélos en libre-service. Il permet de passer de données brutes de remplissage à des feuilles de route précises pour les camions de régulation.
 
 
