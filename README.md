@@ -19,16 +19,18 @@ pip install pandas numpy scipy scikit-learn gurobipy matplotlib
 
 ---
 
-## 📂 Données d'entrée
-
-* Mode `init` : traitement complet depuis les fichiers bruts (`remplissage` et `regulation`) définis dans `config.json`.
+## 📂 Données d'entrée DEUX MODES, init ou rolling
+Le contrat: le but est de maintenir deux fichiers de stock traités:
+-la semaine derniere complete pour du forecast (on considere que la demande est identique d'une semaine a la suivante)
+-la semaine actuel entamée pour le passif du score hebdo et l'etat actuel du parc
+* Mode `init` : traitement complet; on construit la semaine derniere et le debut de la semaine from scratch
 * Mode `rolling` : intégration uniquement de la journée `today`; les fichiers existants sont mis à jour et roulés le dimanche.
 * Les colonnes importantes (`time`, `station`) sont lues depuis `config.json` et vérifiées automatiquement.
-
+*option: process_last_week = true ou false puisque last week ne change pas entre temps
 ---
 
 ## ⚙️ Lancement
-
+0. Charger les donnees de remplissage et regulation pertinente dans raw
 1. Modifier `config.json` pour définir `mode`, fichiers et colonnes.
 2. Exécuter :
 
