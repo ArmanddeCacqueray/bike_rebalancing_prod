@@ -10,3 +10,4 @@ __pycache__/
 .env
 outputs/
 data/*.csv
+data/**/*.csv
