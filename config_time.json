@@ -1,0 +1,11 @@
+{   "DESCRIPTION": ["Time_configuration:",
+                    "Wich fills havn't been processed until yet and thus need to be preprocessed.",
+                    "Wich day need to be solved",
+                    "WARNING: to solve e.g. wednesday planing problem (night)", 
+                    "one need: last_week, mon, tue AND wed to have been processed",
+                    "make_last_from_current:",
+                    "Optionally, on sunday: automatically errase last_week file and build a fresh one from [mon,tue,...,sun]"],
+    "to_preprocess": ["last_week, mon, tue, wed, thu, fri, sat"],
+    "to_solve": ["wed"],
+    "make_last_from_current": false
+}
