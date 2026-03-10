@@ -1,12 +1,40 @@
-{   "DESCRIPTION": ["Time_configuration:",
-                    "Wich fills havn't been processed until yet and thus need to be preprocessed.",
-                    "Wich day need to be solved",
-                    "WARNING: to solve e.g. wednesday planing problem (night)", 
-                    "one need: last_week, mon, tue AND wed to have been processed",
-                    "make_last_from_current:",
-                    "Optionally, on sunday: automatically errase last_week file and build a fresh one from [mon,tue,...,sun]"],
-    "to_preprocess": ["last_week, mon, tue, wed, thu, fri, sat"],
-    "to_solve": ["wednesday"],
-    "make_last_from_current": false
+{
+  "DESCRIPTION": [
+    "Configuration of the temporal pipeline logic.",
+    "",
+    "to_preprocess:",
+    "Days whose raw data must be processed before running the solver.",
+    "preprocessing can be done once (for last week and each days until now) and remain valid until the end of current week",
+    "wich means typicall usecase is to preprocess only today (new) raw file",
+    "(just before planning tonight rebalancing operations) and then solve tonight problem",
+    "",
+    "to_solve:",
+    "Days for which the nightly regulation optimization must be computed.",
+    "Each solve typically takes about 5 minutes.",
+    "",
+    "Important:",
+    "To solve the planning problem for a given day (e.g. Wednesday night),",
+    "following data needs to have been preprocessed:",
+    "last_week, mon, tue, wed.",
+    "",
+    "make_last_from_current:",
+    "Optional utility used on Sunday.",
+    "If true, the pipeline deletes the previous last_week dataset",
+    "and rebuilds it automatically from the current week data",
+    "(mon, tue, wed, thu, fri, sat, sun)."
+  ],
 
+  "to_preprocess": [
+    "last_week",
+    "mon",
+    "tue",
+    "wed",
+  ],
+
+  "to_solve": [
+    "monday",
+    "wednesday",
+  ],
+
+  "make_last_from_current": false
 }
