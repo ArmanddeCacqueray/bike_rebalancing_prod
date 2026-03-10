@@ -6,6 +6,7 @@
                     "make_last_from_current:",
                     "Optionally, on sunday: automatically errase last_week file and build a fresh one from [mon,tue,...,sun]"],
     "to_preprocess": ["last_week, mon, tue, wed, thu, fri, sat"],
-    "to_solve": ["wed"],
+    "to_solve": ["wednesday"],
     "make_last_from_current": false
+
 }
