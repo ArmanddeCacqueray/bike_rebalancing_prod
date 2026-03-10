@@ -30,18 +30,19 @@ def run_pipeline():
     
     # 0. Initialisation
     start_time = time.time()
-    config = load_config()
+    config_time = load_config("config_time.json")
+    config_params = load_config("config_params.json")
     
     print("="*60)
     print("🚀 DÉMARRAGE DU PIPELINE DE RÉÉQUILIBRAGE LOGISTIQUE")
-    print(f"   Jour courant : {config['today']}")
+    print(f"   Jours a planifier : {config_time['to_solve']}")
     print("="*60)
 
     try:
         # ÉTAPE 1 : Nettoyage et Unification
         # Transforme les fichiers bruts en fichiers CLEAN.csv
         print("\n[ETAPE 1] Préparation des données brutes...")
-        run_processing(config)
+        run_processing(config_time)
 
         # ÉTAPE 2 : Reconstruction de la demande (Tucker)
         # Calcule les flux de vélos réels cachés derrière les stocks
