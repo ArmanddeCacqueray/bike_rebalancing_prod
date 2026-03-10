@@ -1,0 +1,75 @@
+{
+  "DESCRIPTION": [
+    "Main configuration file for the optimization pipeline.",
+    "",
+    "This file defines:",
+    "- file paths",
+    "- raw data column names",
+    "- demand reconstruction parameters",
+    "- station evaluation parameters",
+    "- optimization behaviour",
+    "",
+    "The goal is to make the pipeline adaptable to different raw datasets",
+    "without modifying the source code."
+  ],
+
+  "paths": {
+    "raw_dir": "data/raw",
+    "process_dir": "data/processed",
+    "output_dir": "data/outputs",
+
+    "remplissage_prefix": "data/raw/Remplissage",
+    "regulation_prefix": "data/raw/Regulation"
+  },
+
+  "cols_fill": {
+    "station": "station_code",
+    "time": "last_update_date",
+
+    "available_pattern": "available",
+    "not_available_pattern": "not_available",
+
+    "docks_free": "nb_free_dock",
+    "cable_free": "nb_free_cable"
+  },
+
+  "cols_reg": {
+    "station_pick": "Station prise",
+    "station_drop": "Station dépose",
+    "date_start": "Date début",
+    "date_end": "Date fin"
+  },
+
+  "demand_reconstruction": {
+    "gaussian_freq": "2min",
+    "gaussian_sigma": "30min",
+    "max_lag": 5,
+    "tucker_ranks": [600, 7, 60, 5]
+    "sample_freq": "20min",
+  },
+
+  "evaluation": {
+    "hours": [5, 11, 16, 21],
+
+    "thresholds": {
+      "critere_vide": 0.22,
+      "critere_plein": 0.66
+    }
+  },
+
+  "optimization": {
+    "DESCRIPTION": [
+      "Optimization parameters.",
+      "",
+      "solve:",
+      "- 'best' : slower (10 minutes) but better solution",
+      "- 'fast' : faster (5 minutes) but less optimal",
+      "",
+      "visualize:",
+      "If true, display rebalancing plans and truck routes."
+    ],
+
+    "solve": "fast",
+    "visualize": true
+  }
+}
